@@ -15,12 +15,42 @@ describe('UsersController', () => {
         ...dto,
       }
     }),
+
     update: jest.fn((id, dto) => {
       return {
-        id,
+        id : '1',
         ...dto,
       }
+    }),
+
+    findOne: jest.fn((id) => {
+      const user = { name: "deba"}
+      return {
+        id,
+      ...user,
+      }
+    }),
+
+    findAll: jest.fn(() => {
+
+      const users = [
+        {
+          id: '1',
+          name: 'deba one'
+        },
+        {
+        id: '1',
+          name: 'deba one'
+        },  
+      ]
+
+      return users;
+    }),
+
+    remove: jest.fn((id) => {
+      return 'ok'
     })
+
   }
 
   beforeEach(async () => {
@@ -51,17 +81,50 @@ describe('UsersController', () => {
     })
 
     expect(mockUserService.create).toHaveBeenCalledWith(dto);
-  })
+  });
 
   it('should update a user', () => {
     const dto = { name: "updated deba" }
 
     expect(controller.update( '1', dto)).toEqual({
-      id: 1,
+      id: '1',
       ...dto,
     })
 
     expect(mockUserService.update).toHaveBeenCalled();
+  });
+
+  it('should get a user by id', () => {
+    const id = '1'
+    expect(controller.findOne(id)).toEqual({
+      id: 1,
+      name: "deba"
+    })
+    expect(mockUserService.findOne).toHaveBeenCalled();
+  }),
+
+  it('should get all users', () => {
+  
+    expect(controller.findAll()).toEqual(
+      [
+        {
+          id: '1',
+          name: 'deba one'
+        },
+        {
+        id: '1',
+          name: 'deba one'
+        },  
+      ]
+    )
+    expect(mockUserService.findAll).toHaveBeenCalled();
+
+  }),
+
+  it('should delete a user by id', () => {
+    const id = '1';
+    expect(controller.remove(id)).toEqual('ok')
   })
+
 
 });
